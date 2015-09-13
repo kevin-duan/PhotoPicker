@@ -1,7 +1,17 @@
+
 # PhotoPicker
 [![Build Status](https://travis-ci.org/donglua/PhotoPicker.svg?branch=master)](https://travis-ci.org/donglua/PhotoPicker)
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-PhotoPicker-green.svg?style=flat)](https://android-arsenal.com/details/1/2091)
+[ ![Download](https://api.bintray.com/packages/donglua/maven/PhotoPicker/images/download.svg) ](https://bintray.com/donglua/maven/PhotoPicker/_latestVersion)
+[![API](https://img.shields.io/badge/API-10%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=10)
 
-## Example
+---
+
+# Example
+![](http://ww2.sinaimg.cn/large/5e9a81dbgw1etra5iu80lj206z0cet8r.jpg)
+![](http://ww2.sinaimg.cn/large/5e9a81dbgw1etra61rnr9j206z0ce3yu.jpg)
+![](http://ww4.sinaimg.cn/large/5e9a81dbgw1etra6efl1hj206z0cewet.jpg)
+![](http://ww3.sinaimg.cn/large/5e9a81dbgw1etra6q2edzj206z0cedgg.jpg)
 
 <p style="float:left;">
   <a href="https://play.google.com/store/apps/details?id=me.iwf.PhotoPickerDemo">
@@ -9,25 +19,37 @@
   </a>
 </p>
 
+---
 
-## Usage
+# Usage
 
-#### Gradle
-```groovy    
+### Gradle
+
+```groovy
 dependencies {
-    compile 'me.iwf.photopicker:PhotoPicker:0.1.8'
+    compile 'me.iwf.photopicker:PhotoPicker:0.2.7@aar'
+    
+    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.android.support:recyclerview-v7:22.2.0'
+    compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.android.support:design:22.2.0'
+    compile 'com.github.bumptech.glide:glide:3.6.0'
 }
-``` 
+```
 
-#### Pick Photo
+### eclipse
+[![GO HOME](http://ww4.sinaimg.cn/large/5e9a81dbgw1eu90m08v86j20dw09a3yu.jpg)
+
+### Pick Photo
 ```java
 PhotoPickerIntent intent = new PhotoPickerIntent(MainActivity.this);
 intent.setPhotoCount(9);
 intent.setShowCamera(true);
+intent.setShowGif(true);
 startActivityForResult(intent, REQUEST_CODE);
 ```
 
-#### Preview Photo
+### Preview Photo
 
 ```java
 Intent intent = new Intent(mContext, PhotoPagerActivity.class);
@@ -36,7 +58,7 @@ intent.putExtra(PhotoPagerActivity.EXTRA_PHOTOS, photoPaths);
 startActivityForResult(intent, REQUEST_CODE);
 ```
 
-#### onActivityResult
+### onActivityResult
 ```java
 @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
   super.onActivityResult(requestCode, resultCode, data);
@@ -50,7 +72,7 @@ startActivityForResult(intent, REQUEST_CODE);
 }
 ```
 
-#### manifest
+### manifest
 ```xml
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     >
@@ -72,8 +94,22 @@ startActivityForResult(intent, REQUEST_CODE);
   </application>
 </manifest>
 ```
+### Custom style
+```xml
+<style name="myTheme.actionBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+  <item name="android:textColorPrimary">#0000ff</item>
+</style>
 
-## License
+<style name="myTheme" parent="Theme.AppCompat.Light.NoActionBar">
+  <item name="actionBarTheme">@style/myTheme.actionBar</item>
+  <item name="colorPrimary">#00FF00</item>
+</style>
+```
+
+---
+
+
+# License
 
     Copyright 2015 Huang Donglu
 

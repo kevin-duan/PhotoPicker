@@ -18,7 +18,6 @@ import android.widget.Button;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import me.iwf.photopicker.PhotoPickerActivity;
 import me.iwf.photopicker.R;
 import me.iwf.photopicker.adapter.PhotoGridAdapter;
@@ -30,6 +29,7 @@ import me.iwf.photopicker.utils.ImageCaptureManager;
 import me.iwf.photopicker.utils.MediaStoreHelper;
 
 import static android.app.Activity.RESULT_OK;
+import static me.iwf.photopicker.PhotoPickerActivity.EXTRA_SHOW_GIF;
 import static me.iwf.photopicker.utils.MediaStoreHelper.INDEX_ALL_PHOTOS;
 
 /**
@@ -43,22 +43,25 @@ public class PhotoPickerFragment extends Fragment {
   private PopupDirectoryListAdapter listAdapter;
   private List<PhotoDirectory> directories;
 
+
   @Override public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     directories = new ArrayList<>();
 
-    photoGridAdapter = new PhotoGridAdapter(getActivity(), directories);
-    listAdapter  = new PopupDirectoryListAdapter(getActivity(), directories);
-
     captureManager = new ImageCaptureManager(getActivity());
 
+    Bundle mediaStoreArgs = new Bundle();
+    if (getActivity() instanceof PhotoPickerActivity) {
+      mediaStoreArgs.putBoolean(EXTRA_SHOW_GIF, ((PhotoPickerActivity) getActivity()).isShowGif());
+    }
 
-    MediaStoreHelper.getPhotoDirs(getActivity(),
+    MediaStoreHelper.getPhotoDirs(getActivity(), mediaStoreArgs,
         new MediaStoreHelper.PhotosResultCallback() {
-          @Override public void onResultCallback(List<PhotoDirectory> directories) {
+          @Override public void onResultCallback(List<PhotoDirectory> dirs) {
+            directories.clear();
+            directories.addAll(dirs);
             photoGridAdapter.notifyDataSetChanged();
-            PhotoPickerFragment.this.directories.addAll(directories);
             listAdapter.notifyDataSetChanged();
           }
         });
@@ -67,7 +70,14 @@ public class PhotoPickerFragment extends Fragment {
 
   @Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
+
+    setRetainInstance(true);
+
     final View rootView = inflater.inflate(R.layout.fragment_photo_picker, container, false);
+
+    photoGridAdapter = new PhotoGridAdapter(getActivity(), directories);
+    listAdapter  = new PopupDirectoryListAdapter(getActivity(), directories);
+
 
     RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.rv_photos);
     StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(3, OrientationHelper.VERTICAL);
@@ -132,10 +142,11 @@ public class PhotoPickerFragment extends Fragment {
 
         if (listPopupWindow.isShowing()) {
           listPopupWindow.dismiss();
-        } else {
+        } else if (!getActivity().isFinishing()) {
           listPopupWindow.setHeight(Math.round(rootView.getHeight() * 0.8f));
           listPopupWindow.show();
         }
+
       }
     });
 
